@@ -23,5 +23,12 @@
   "bugs": {
     "url": "https://github.com/zishon89us/xero/issues"
   },
-  "homepage": "https://github.com/zishon89us/xero#readme"
+  "homepage": "https://github.com/zishon89us/xero#readme",
+  "dependencies": {
+    "crypto": "0.0.3",
+    "easyxml": "^2.0.1",
+    "inflect": "^0.3.0",
+    "oauth": "^0.9.14",
+    "xml2js": "^0.4.16"
+  }
 }
