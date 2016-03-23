@@ -1,0 +1,27 @@
+{
+  "name": "xero-api",
+  "version": "1.0.0",
+  "description": "Xero.com Node Library",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zishon89us/xero.git"
+  },
+  "keywords": [
+    "xero",
+    "node",
+    "node.js",
+    "xero-api",
+    "accounting",
+    "payroll"
+  ],
+  "author": "Zeeshan Hassan Memon",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zishon89us/xero/issues"
+  },
+  "homepage": "https://github.com/zishon89us/xero#readme"
+}
