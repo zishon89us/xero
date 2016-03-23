@@ -6,7 +6,8 @@ var crypto  = require("crypto"),
     inflect = require('inflect');
 
 var XERO_BASE_URL = 'https://api.xero.com',
-    XERO_API_URL = XERO_BASE_URL + '/api.xro/2.0';
+    XERO_CORE_API_URL = XERO_BASE_URL + '/api.xro/2.0',
+    XERO_PAYROLL_API_URL = XERO_BASE_URL + '/payroll.xro/1.0';
 
 function Xero(key, secret, rsa_key, showXmlAttributes, customHeaders) {
 
@@ -22,7 +23,7 @@ function Xero(key, secret, rsa_key, showXmlAttributes, customHeaders) {
     };
 }
 
-Xero.prototype.call = function(method, path, body, callback) {
+Xero.prototype.core = function(method, path, body, callback) {
     var self = this;
 
     var post_body = null;
@@ -50,7 +51,38 @@ Xero.prototype.call = function(method, path, body, callback) {
             }
         });
     };
-    return self.oa._performSecureRequest(self.key, self.secret, method, XERO_API_URL + path, null, post_body, content_type, callback ? process : null);
+    return self.oa._performSecureRequest(self.key, self.secret, method, XERO_CORE_API_URL + path, null, post_body, content_type, callback ? process : null);
+}
+
+Xero.prototype.payroll = function(method, path, body, callback) {
+    var self = this;
+
+    var post_body = null;
+    var content_type = null;
+    if (method && method !== 'GET' && body) {
+        if (Buffer.isBuffer(body)) {
+            post_body = body;
+        } else {
+            var root = path.match(/([^\/\?]+)/)[1];
+            post_body = new EasyXml({rootElement: inflect.singularize(root), rootArray: root, manifest: true}).render(body);
+            content_type = 'application/xml';
+        }
+    }
+    var process = function(err, xml, res) {
+        if (err) {
+            return callback(err);
+        }
+
+        self.parser.parseString(xml, function(err, json) {
+            if (err) return callback(err);
+            if (json && json.Response && json.Response.Status !== 'OK') {
+                return callback(json, res);
+            } else {
+                return callback(null, json, res);
+            }
+        });
+    };
+    return self.oa._performSecureRequest(self.key, self.secret, method, XERO_PAYROLL_API_URL + path, null, post_body, content_type, callback ? process : null);
 }
 
 module.exports = Xero;
